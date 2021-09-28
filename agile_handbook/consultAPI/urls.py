@@ -1,3 +1,4 @@
+from django.template.response import ContentNotRenderedError
 from django.urls import path, include
 from django.views.generic import base
 from .views import ConsultDetails, consult_list, ConsultAPIView
@@ -20,9 +21,8 @@ route.register(r'anamnese', AnamneseViewSet, basename="Anamnese")
 
 urlpatterns = [
     path('consult/', consult_list),
-    #path('detail/<int:pk>', article_detail),
     path('consult/', ConsultAPIView.as_view()),
     path('consult/<int:id>', ConsultDetails.as_view()),
-    path('', include(route.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('accounts/profile/', include(route.urls)),
+    path('', include('rest_framework.urls', namespace='rest_framework'))
 ]

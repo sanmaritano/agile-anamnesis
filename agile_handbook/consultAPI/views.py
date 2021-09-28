@@ -1,17 +1,25 @@
 from django.http import HttpResponse, JsonResponse
-from rest_framework.views import APIView
 from .models import Consult
 from .serializers import ConsultSerializer
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import serializers, status, generics, mixins
+from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
+class AuthenticationView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
-class GenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-    serializers_class = ConsultSerializer
-    queryset = Consult.objects.all()
+    def get(self, request, format=None):
+        content = {
+            'user': str(request.user),
+            'auth': str(request.auth),
+        }
 
-
+        return Response(content)
+        
 class ConsultAPIView(APIView):
 
     def get(self, request):
